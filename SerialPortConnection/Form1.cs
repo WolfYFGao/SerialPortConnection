@@ -175,23 +175,25 @@ namespace SerialPortConnection
                 {
                     //输出当前时间
                     DateTime dt = DateTime.Now;
-                    txtReceive.Text += dt.GetDateTimeFormats('f')[0].ToString() + "\r\n";
+                    //txtReceive.Text += dt.GetDateTimeFormats('f')[0].ToString() + "\r\n";
+                    txtReceive.Text += dt.GetDateTimeFormats('f')[0].ToString();
                 }
                 else
                 {
-                    txtReceive.Text += "\r\n";
+                    //txtReceive.Text += "\r\n";
+                    //txtReceive.Text += ;
                 }
                 txtReceive.SelectAll();
                 txtReceive.SelectionColor = Color.Blue;         //改变字体的颜色
 
                 //byte[] byteRead = new byte[sp1.BytesToRead];    //BytesToRead:sp1接收的字符个数
+                Byte[] receivedData = new Byte[sp1.BytesToRead];        //创建接收字节数组
+                sp1.Read(receivedData, 0, receivedData.Length);         //读取数据
                 if (rbRcvStr.Checked)                          //'接收字符串'单选按钮
-                {
-                    Byte[] receivedData = new Byte[sp1.BytesToRead];        //创建接收字节数组
-                    sp1.Read(receivedData, 0, receivedData.Length);         //读取数据
-
+                {              
                     System.Text.ASCIIEncoding asciiEncoding = new System.Text.ASCIIEncoding();
-                    txtReceive.Text += asciiEncoding.GetString(receivedData) + "\r\n";
+                    //txtReceive.Text += asciiEncoding.GetString(receivedData) + "\r\n";
+                    txtReceive.Text += asciiEncoding.GetString(receivedData);
                     //txtReceive.Text += sp1.ReadLine() + "\r\n"; //注意：回车换行必须这样写，单独使用"\r"和"\n"都不会有效果
                     sp1.DiscardInBuffer();                      //清空SerialPort控件的Buffer 
                 }
@@ -199,8 +201,6 @@ namespace SerialPortConnection
                 {
                     try
                     {
-                        Byte[] receivedData = new Byte[sp1.BytesToRead];        //创建接收字节数组
-                        sp1.Read(receivedData, 0, receivedData.Length);         //读取数据
                         //string text = sp1.Read();   //Encoding.ASCII.GetString(receivedData);
                         sp1.DiscardInBuffer();                                  //清空SerialPort控件的Buffer
                         //这是用以显示字符串
@@ -214,11 +214,11 @@ namespace SerialPortConnection
                         string strRcv = null;
                         //int decNum = 0;//存储十进制
                         for (int i = 0; i < receivedData.Length; i++) //窗体显示
-                        {
-                          
+                        {                    
                             strRcv += receivedData[i].ToString("X2") + " ";  //16进制显示
                         }
-                        txtReceive.Text += strRcv + "\r\n";
+                        //txtReceive.Text += strRcv + "\r\n";
+                        txtReceive.Text += strRcv.Remove(strRcv.Length - 3) ;
                     }
                     catch (System.Exception ex)
                     {
