@@ -152,7 +152,8 @@ namespace SerialPortConnection
             sp1.DataReceived += new SerialDataReceivedEventHandler(sp1_DataReceived);
             //sp1.ReceivedBytesThreshold = 1;
 
-            radio1.Checked = true;  //单选按钮默认是选中的
+
+            rdSendStr.Checked = true;  //单选按钮默认是选中的
             rbRcvStr.Checked = true;
 
             //准备就绪              
@@ -170,17 +171,17 @@ namespace SerialPortConnection
             {
                 //输出当前时间
                 DateTime dt = DateTime.Now;
-                txtReceive.Text += dt.GetDateTimeFormats('f')[0].ToString() + "\r\n";
+                //txtReceive.Text += dt.GetDateTimeFormats('f')[0].ToString() + "\r\n";
                 txtReceive.SelectAll();
                 txtReceive.SelectionColor = Color.Blue;         //改变字体的颜色
 
                 byte[] byteRead = new byte[sp1.BytesToRead];    //BytesToRead:sp1接收的字符个数
-                if (rdSendStr.Checked)                          //'发送字符串'单选按钮
+                if (rbRcvStr.Checked)                          //'接收字符串'单选按钮
                 {
                     txtReceive.Text += sp1.ReadLine() + "\r\n"; //注意：回车换行必须这样写，单独使用"\r"和"\n"都不会有效果
                     sp1.DiscardInBuffer();                      //清空SerialPort控件的Buffer 
                 }
-                else                                            //'发送16进制按钮'
+                else                                            //'接收16进制按钮'
                 {
                     try
                     {
@@ -549,6 +550,54 @@ namespace SerialPortConnection
             //添加串口项目
             cbSerial.Items.AddRange(str);
             cbSerial.SelectedIndex = tmpIndex;
+        }
+
+        private void radio1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radio1.Checked)
+            {
+                //按16进制发送
+                byte[] byteArray = System.Text.Encoding.ASCII.GetBytes(txtSend.Text.Trim());
+                txtSend.Text = "";
+                foreach (byte bb in byteArray)
+                {
+                    txtSend.Text = txtSend.Text + bb.ToString("X") + " ";
+                }
+
+            }
+            else
+            {
+                //按字符串发送
+                if (rdSendStr.Checked)
+                {
+                    string[] strArray = txtSend.Text.Trim().Split(' ');
+                    byte[] byteArray = new byte[strArray.Length];
+                    Convert.ToInt32("3A",16);
+                    for (int i = 0; i < strArray.Length;i++ )
+                    {
+                        byteArray[i] = (byte)Convert.ToInt32(strArray[i],16);
+                    }
+                    txtSend.Text = "";
+                    try
+                    {
+                        if (true)
+                        {
+                            System.Text.ASCIIEncoding asciiEncoding = new System.Text.ASCIIEncoding();
+                            string sss = asciiEncoding.GetString(byteArray);
+                            //txtSend.Text = asciiEncoding.GetString(byteArray);
+                            txtSend.Text = sss;
+                        }
+                        else
+                        {
+                            throw new Exception("ASCII Code is not valid.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        //MessageBox.Show(ex.Source,ex.Message);
+                    }
+                }
+            }
         }
     }
 }

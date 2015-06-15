@@ -356,6 +356,7 @@
             this.radio1.TabStop = true;
             this.radio1.Text = "16进制";
             this.radio1.UseVisualStyleBackColor = true;
+            this.radio1.CheckedChanged += new System.EventHandler(this.radio1_CheckedChanged);
             // 
             // rdSendStr
             // 
