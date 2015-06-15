@@ -1,0 +1,8 @@
+*.obj
+*.tlog
+AES/ipch
+*.sdf
+*.cache
+obj
+bin
+Debug
