@@ -15,6 +15,8 @@ namespace SerialPortConnection
     public partial class Form1 : Form
     {
         SerialPort sp1 = new SerialPort();
+        //是否显示接收时间标志
+        bool flagShowDate = false;  
         //sp1.ReceivedBytesThreshold = 1;//只要有1个字符送达端口时便触发DataReceived事件 
          
         public Form1()
@@ -169,16 +171,28 @@ namespace SerialPortConnection
         {
             if (sp1.IsOpen)     //此处可能没有必要判断是否打开串口，但为了严谨性，我还是加上了
             {
-                //输出当前时间
-                DateTime dt = DateTime.Now;
-                //txtReceive.Text += dt.GetDateTimeFormats('f')[0].ToString() + "\r\n";
+                if (flagShowDate)
+                {
+                    //输出当前时间
+                    DateTime dt = DateTime.Now;
+                    txtReceive.Text += dt.GetDateTimeFormats('f')[0].ToString() + "\r\n";
+                }
+                else
+                {
+                    txtReceive.Text += "\r\n";
+                }
                 txtReceive.SelectAll();
                 txtReceive.SelectionColor = Color.Blue;         //改变字体的颜色
 
-                byte[] byteRead = new byte[sp1.BytesToRead];    //BytesToRead:sp1接收的字符个数
+                //byte[] byteRead = new byte[sp1.BytesToRead];    //BytesToRead:sp1接收的字符个数
                 if (rbRcvStr.Checked)                          //'接收字符串'单选按钮
                 {
-                    txtReceive.Text += sp1.ReadLine() + "\r\n"; //注意：回车换行必须这样写，单独使用"\r"和"\n"都不会有效果
+                    Byte[] receivedData = new Byte[sp1.BytesToRead];        //创建接收字节数组
+                    sp1.Read(receivedData, 0, receivedData.Length);         //读取数据
+
+                    System.Text.ASCIIEncoding asciiEncoding = new System.Text.ASCIIEncoding();
+                    txtReceive.Text += asciiEncoding.GetString(receivedData) + "\r\n";
+                    //txtReceive.Text += sp1.ReadLine() + "\r\n"; //注意：回车换行必须这样写，单独使用"\r"和"\n"都不会有效果
                     sp1.DiscardInBuffer();                      //清空SerialPort控件的Buffer 
                 }
                 else                                            //'接收16进制按钮'
@@ -202,7 +216,7 @@ namespace SerialPortConnection
                         for (int i = 0; i < receivedData.Length; i++) //窗体显示
                         {
                           
-                            strRcv += receivedData[i].ToString("X2");  //16进制显示
+                            strRcv += receivedData[i].ToString("X2") + " ";  //16进制显示
                         }
                         txtReceive.Text += strRcv + "\r\n";
                     }
@@ -572,7 +586,6 @@ namespace SerialPortConnection
                 {
                     string[] strArray = txtSend.Text.Trim().Split(' ');
                     byte[] byteArray = new byte[strArray.Length];
-                    Convert.ToInt32("3A",16);
                     for (int i = 0; i < strArray.Length;i++ )
                     {
                         byteArray[i] = (byte)Convert.ToInt32(strArray[i],16);
@@ -583,9 +596,7 @@ namespace SerialPortConnection
                         if (true)
                         {
                             System.Text.ASCIIEncoding asciiEncoding = new System.Text.ASCIIEncoding();
-                            string sss = asciiEncoding.GetString(byteArray);
-                            //txtSend.Text = asciiEncoding.GetString(byteArray);
-                            txtSend.Text = sss;
+                            txtSend.Text = asciiEncoding.GetString(byteArray);
                         }
                         else
                         {
@@ -597,6 +608,19 @@ namespace SerialPortConnection
                         //MessageBox.Show(ex.Source,ex.Message);
                     }
                 }
+            }
+        }
+
+        private void cbShowDate_CheckedChanged(object sender, EventArgs e)
+        {
+            //是否显示接收时间
+            if (cbShowDate.Checked)
+            {
+                flagShowDate = true;
+            }
+            else
+            {
+                flagShowDate = false;
             }
         }
     }

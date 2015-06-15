@@ -69,6 +69,7 @@
             this.tsDataBits = new System.Windows.Forms.ToolStripStatusLabel();
             this.tsStopBits = new System.Windows.Forms.ToolStripStatusLabel();
             this.tsParity = new System.Windows.Forms.ToolStripStatusLabel();
+            this.cbShowDate = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox8.SuspendLayout();
@@ -487,11 +488,23 @@
             this.tsParity.Size = new System.Drawing.Size(86, 17);
             this.tsParity.Text = "停止位:未指定|";
             // 
+            // cbShowDate
+            // 
+            this.cbShowDate.AutoSize = true;
+            this.cbShowDate.Location = new System.Drawing.Point(337, 385);
+            this.cbShowDate.Name = "cbShowDate";
+            this.cbShowDate.Size = new System.Drawing.Size(120, 16);
+            this.cbShowDate.TabIndex = 13;
+            this.cbShowDate.Text = "是否显示接收时间";
+            this.cbShowDate.UseVisualStyleBackColor = true;
+            this.cbShowDate.CheckedChanged += new System.EventHandler(this.cbShowDate_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(626, 431);
+            this.Controls.Add(this.cbShowDate);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.btnExit);
             this.Controls.Add(this.btnClear);
@@ -561,6 +574,7 @@
         private System.Windows.Forms.ToolStripStatusLabel tsParity;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.CheckBox cbShowDate;
     }
 }
 
